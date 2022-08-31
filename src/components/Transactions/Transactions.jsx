@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import s from './Transactions.css'
+import styles from './Transactions.css'
 
 export default function Transactions ({items}){
     return(
