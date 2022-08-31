@@ -18,7 +18,7 @@
     list-style: none;
     margin: 20px 0px;
     padding-bottom: 10px;
-    padding-left: 0;
+    padding-left: auto;
   }
   
   .statistics .statList .item {

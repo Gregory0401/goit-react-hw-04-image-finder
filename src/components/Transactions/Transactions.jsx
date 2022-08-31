@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from '../Transactions/Transactions.css'
+import s from './Transactions.css'
 
 export default function Transactions ({items}){
     return(
-        <table class="transaction-history">
+        <table className="transaction-history">
   <thead>
     <tr>
       <th>Type</th>
@@ -27,3 +27,14 @@ export default function Transactions ({items}){
 </table>
     )
 }
+
+Transactions.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+      amount: PropTypes.string.isRequired,
+      currency: PropTypes.string.isRequired,
+    }).isRequired
+  ).isRequired,
+};
