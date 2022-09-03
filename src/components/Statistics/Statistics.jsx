@@ -1,36 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import s from './Statistics.module.css';
+import s from '../Feedback.module.css'
 
-
-
-export default function Statistics  ({ title, stats }) {
-  return (
-    <section className={s.statistics}>
-     <h2 className={s.title}>{title}</h2>
-
-      <ul className={s.statList}>
-        {stats.map(data => (
-          <li
-            key={data.id}
-            className={s.item}
-          >
-            <span className={s.label} >{data.label}</span>
-            <span className={s.percentage} >{data.percentage}%</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-};
+const Statistics = ({ good, neutral, bad, total, positiveFeedbackPercentage }) => (
+                      <ul className={s.data}>
+                      <li className={s.statistic}>Good:{good}</li>
+                      <li className={s.statistic}>Bad:{bad}</li>
+                      <li className={s.statistic}>Neutral:{neutral}</li>
+                      <li className={s.statistic}>Total:{total}</li>
+                      <li className={s.statistic}>Positive feedback:{positiveFeedbackPercentage}%</li>  
+                      </ul> 
+)
 
 Statistics.propTypes = {
-  title: PropTypes.string,
-  stats: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      percentage: PropTypes.number.isRequired,
-    }).isRequired
-  ).isRequired,
-};
+    good: PropTypes.number.isRequired,
+    neutral: PropTypes.number.isRequired,
+    bad: PropTypes.number.isRequired,
+    total: PropTypes.number.isRequired,
+    positivePercentage: PropTypes.number.isRequired,
+  };
+
+  export default Statistics;
