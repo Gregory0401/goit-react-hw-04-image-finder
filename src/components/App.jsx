@@ -1,75 +1,70 @@
-import React, { Component } from 'react'
-import s from '../components/Feedback.module.css'
-import Notification from './Notification/Notification';
-import Statistics from './Statistics/Statistics';
-import FeedbackOptions from './FeedbackOptions/FeedbackOptions'
-import Section from './Section/Section'
+import {React, Component } from 'react';
+import ContactForm from './ContactForm/ContactForm';
+import ContactList from './ContactList/ContactList';
+import Filter from '../components/Filter/Filter';
+import s from '../components/Filter/Filter.module.css'
+import { nanoid } from 'nanoid'
 
+class App extends Component {
+  state = {
+    contacts: [
+  { id: 'id-1', name: 'Cristiano Ronaldo', number: '459-12-56' },
+  { id: 'id-2', name: 'Harry Kane', number: '443-89-12' },
+  { id: 'id-3', name: 'Erling Haaland', number: '645-17-79' },
+  { id: 'id-4', name: 'Raheem Sterling', number: '227-91-26' },
+    ],
+    filter: '' 
+  }
 
-class Feedback extends Component {
-    state = {
-        good: 0,
-        neutral: 0,
-        bad: 0
-      }
-
-feedbackIncrementGood = () => {
-    this.setState (prevState => ({
-        good: prevState.good +1,
-    }))}
-
-    handleClick = e => {
-        const { name } = e.target;
-        this.setState(state => ({ [name]: state[name] + 1 }));
-        this.countTotalFeedback();
-        this.countPositiveFeedbackPercentage();
-      };
-
-countTotalFeedback = () => {
-            const total = this.state.good + this.state.neutral + this.state.bad;
-            return total
-          };
-
-countPositiveFeedbackPercentage = () => {
-            return Math.round((this.state.good / this.countTotalFeedback()) * 100);
-          };
-
-    render(){
-        const total = this.countTotalFeedback();
-        const positiveFeedbackPercentage = this.countPositiveFeedbackPercentage();
-        const { good, neutral, bad } = this.state;
-        
-
-        return (
-            
-            <div className={s.card}>
-                  <Section title="Please leave feedback" />
-
-                  <FeedbackOptions
-                   options={this.state}
-                   onLeaveFeedback={this.handleClick}
-                   />
-                  
-                  <span className={s.title}>Statistics</span>
-                  {total !== 0 ? (
-                  <Statistics
-                  good={good} 
-                  neutral={neutral}
-                  bad={bad}
-                  total={total}
-                  positiveFeedbackPercentage={positiveFeedbackPercentage}
-                />
-                  ) : (
-                    <Notification message="There is no feedback" />
-                    )}
-               
-               
-               </div>
-                    
-        )
+  onSubmit = (submitName, submitNumber) => {
+    if (this.state.contacts.find(contact => contact.name === submitName)) {
+      return alert(`${submitName} is already in contacts.`);
     }
+    this.setState(PreviousState => {
+      return {
+        contacts: [
+          ...PreviousState.contacts,
+          {
+            id: nanoid(),
+            name: submitName,
+            number: submitNumber,
+          },
+        ],
+      };
+    });
+  };
+
+handleRemoveContact = id => 
+this.setState(({contacts}) => ({
+  contacts: contacts.filter(contact => contact.id !== id),
+}))
+
+handleFilterChange = filter => this.setState({filter});
+
+getVisibleContacts = () => {
+  const {contacts, filter} = this.state;
+  return contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase()))
 }
 
+  render() {
+    
+const {filter} = this.state;
+const visibleContacts = this.getVisibleContacts();
 
+      return(
+        <>
+        <ContactForm 
+        onSubmit={this.onSubmit}
+        />
+        <div className={s.container}>
+        <h2 className={s.header_contact}>Contacts</h2>
+        <Filter filter={filter} onChange={this.handleFilterChange}/>
+        <ContactList onRemove={this.handleRemoveContact}  contacts={visibleContacts}/>
+        </div>          
+        </>
+      )
+  }
+}
 
-export default Feedback;
+export default App;
