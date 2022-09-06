@@ -26,7 +26,7 @@ class App extends Component {
         this.setState(() => ({ contacts: contacts }));
       }
     } catch (error) {
-      console.log(error);
+      alert('ERROR');
     }
   }
 
@@ -95,16 +95,3 @@ export default App;
 
 
 
-// import {React, Component } from 'react';
-// import Modal from './Modal'
-
-// class App extends Component {
-// state ={}
-
-// render(){
-//   return(
-//     <Modal />
-//   )
-// }
-// }
-// export default App;
