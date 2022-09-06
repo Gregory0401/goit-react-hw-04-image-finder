@@ -58,6 +58,7 @@ resetForm = () => this.setState(STATE)
               <input
               type="tel"
               name="number"
+              id="number"
               className={s.input_number}
               value={this.state.number}
               onChange={this.handleChange}

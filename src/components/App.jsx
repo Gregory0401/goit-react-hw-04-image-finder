@@ -5,6 +5,7 @@ import Filter from '../components/Filter/Filter';
 import s from '../components/Filter/Filter.module.css'
 import { nanoid } from 'nanoid'
 
+
 class App extends Component {
   state = {
     contacts: [
@@ -14,6 +15,26 @@ class App extends Component {
   { id: 'id-4', name: 'Raheem Sterling', number: '227-91-26' },
     ],
     filter: '' 
+  }
+
+  componentDidMount() {
+    try {
+      const json = localStorage.getItem('contacts');
+      const contacts = JSON.parse(json);
+
+      if (contacts) {
+        this.setState(() => ({ contacts: contacts }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      const json = JSON.stringify(this.state.contacts);
+      localStorage.setItem('contacts', json);
+    }
   }
 
   onSubmit = (submitName, submitNumber) => {
@@ -54,10 +75,12 @@ const visibleContacts = this.getVisibleContacts();
 
       return(
         <>
+        
         <ContactForm 
         onSubmit={this.onSubmit}
         />
         <div className={s.container}>
+       
         <h2 className={s.header_contact}>Contacts</h2>
         <Filter filter={filter} onChange={this.handleFilterChange}/>
         <ContactList onRemove={this.handleRemoveContact}  contacts={visibleContacts}/>
@@ -68,3 +91,20 @@ const visibleContacts = this.getVisibleContacts();
 }
 
 export default App;
+
+
+
+
+// import {React, Component } from 'react';
+// import Modal from './Modal'
+
+// class App extends Component {
+// state ={}
+
+// render(){
+//   return(
+//     <Modal />
+//   )
+// }
+// }
+// export default App;
