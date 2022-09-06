@@ -18,22 +18,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-    try {
-      const json = localStorage.getItem('contacts');
-      const contacts = JSON.parse(json);
-
-      if (contacts) {
-        this.setState(() => ({ contacts: contacts }));
-      }
-    } catch (error) {
-      alert('ERROR');
-    }
+  
+      const dataContact = localStorage.getItem('contacts');
+      const contacts = JSON.parse(dataContact);
+      this.setState ({ contacts: contacts });
+      
   }
 
   componentDidUpdate(prevState) {
     if (prevState.contacts !== this.state.contacts) {
-      const json = JSON.stringify(this.state.contacts);
-      localStorage.setItem('contacts', json);
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     }
   }
 
