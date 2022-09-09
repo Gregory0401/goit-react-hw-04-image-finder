@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import s from './Modal.module.css';
+import s from '../Modal/Modal.module.css';
 
 class Modal extends Component {
   
@@ -23,8 +23,8 @@ class Modal extends Component {
   render() {
     const { photo } = this.props;
     return (
-      <div className={s.Overlay} onClick={this.handleClose}>
-        <div className={s.Modal}>
+      <div className={s.backdrop} onClick={this.handleClose}>
+        <div className={s.modal}>
           <img src={photo.largeImageURL} alt={photo.tags} />
         </div>
       </div>

@@ -1,7 +1,5 @@
-
-
 import React, { Component } from 'react';
-import pixFetch, { resetPage } from '../components/Image/pixabay';
+import pixFetch  from '../components/Image/pixabay';
 import { BallTriangle } from 'react-loader-spinner';
 import ImageGallery from '../components/ImageGallery/ImageGallery';
 import ImageGalleryItem from '../components/ImageGalleryItem/ImageGalleryItem';
@@ -18,13 +16,21 @@ class App extends Component {
     clickedImg: {},
   };
 
-  onSubmit = searchValue => {
-    resetPage();
-    this.setState({ status: 'pending', searchQuery: searchValue });
+  resetPage = ()=> {
+    this.setState({
+    photos: [],
+    page: 1
+    })
+  }
+  
+  getValue = searchValue => {
+    this.resetPage();
+    this.setState({ searchQuery: searchValue });
     pixFetch(searchValue)
       .then(data => this.onHandleData(data.hits))
       .catch(error => console.log(error));
   };
+
 
   onLoadMore = () => {
     this.setState({ status: 'pending' });
@@ -37,7 +43,7 @@ class App extends Component {
     this.setState(prevState =>
       prevState.searchQuery !== this.state.searchQuery
         ? { photos: data, status: 'loaded' }
-        : { photos: [...this.state.photos, ...data], status: 'loaded' }
+        : { photos: [...this.state.photos, ...data], status: 'loaded'}
     );
   };
 
@@ -55,7 +61,7 @@ class App extends Component {
 
     return (
       <>
-        <Searchbar onSubmit={this.onSubmit} />
+        <Searchbar onSubmit={this.getValue} />
         <ImageGallery>
           <ImageGalleryItem
             photos={this.state.photos}
@@ -68,7 +74,7 @@ class App extends Component {
             height={100}
             width={100}
             radius={5}
-            color="#4fa94d"
+            color="#f61313"
             ariaLabel="ball-triangle-loading"
             wrapperClass={{}}
             wrapperStyle={spinnerStyle}
@@ -92,3 +98,7 @@ class App extends Component {
 }
 
 export default App;
+
+
+
+

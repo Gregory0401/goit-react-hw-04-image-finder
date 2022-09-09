@@ -1,4 +1,4 @@
-let PAGE_COUNTER = 1;
+let PAGE = 1;
 
 function pixFetch(searchValue) {
   const BASIC_URL = `https://pixabay.com/api/`;
@@ -7,21 +7,16 @@ function pixFetch(searchValue) {
     q: `${searchValue}`,
     image_type: 'photo',
     orientation: 'horizontal',
-    page: `${PAGE_COUNTER}`,
-    per_page: 12,
+    page: `${PAGE}`,
+    per_page: 9,
   });
 
-  return fetch(`${BASIC_URL}?${searchParam}`).then(response => {
-    if (response.ok) {
-      PAGE_COUNTER += 1;
-      return response.json();
-    }
-    throw new Error('ERROR');
-  });
+  return fetch(`${BASIC_URL}?${searchParam}`)
+  .then(response => response.json());
 }
 
 export default pixFetch;
 
-export const resetPage = () => {
-  PAGE_COUNTER = 1;
-};
+
+
+ 
