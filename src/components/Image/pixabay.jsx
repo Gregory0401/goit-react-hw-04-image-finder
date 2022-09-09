@@ -1,6 +1,4 @@
-let PAGE = 1;
-
-function pixFetch(searchValue) {
+function pixFetch(searchValue, PAGE = 1) {
   const BASIC_URL = `https://pixabay.com/api/`;
   const searchParam = new URLSearchParams({
     key: '28712886-1cb23b606877bc8498f4e16b7',

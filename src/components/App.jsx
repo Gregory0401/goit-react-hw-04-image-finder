@@ -14,6 +14,7 @@ class App extends Component {
     status: 'idle',
     showModal: false,
     clickedImg: {},
+    page: 1
   };
 
   resetPage = ()=> {
@@ -33,8 +34,8 @@ class App extends Component {
 
 
   onLoadMore = () => {
-    this.setState({ status: 'pending' });
-    pixFetch(this.state.searchQuery)
+    this.setState({ status: 'pending', page: this.state.page +=1 });
+    pixFetch(this.state.searchQuery, this.state.page)
       .then(data => this.onHandleData(data.hits))
       .catch(error => console.log(error));
   };
