@@ -1,93 +1,94 @@
-import {React, Component } from 'react';
-import ContactForm from './ContactForm/ContactForm';
-import ContactList from './ContactList/ContactList';
-import Filter from '../components/Filter/Filter';
-import s from '../components/Filter/Filter.module.css'
-import { nanoid } from 'nanoid'
 
+
+import React, { Component } from 'react';
+import pixFetch, { resetPage } from '../components/Image/pixabay';
+import { BallTriangle } from 'react-loader-spinner';
+import ImageGallery from '../components/ImageGallery/ImageGallery';
+import ImageGalleryItem from '../components/ImageGalleryItem/ImageGalleryItem';
+import Searchbar from '../components/Searchbar/Searchbar';
+import Button from '../components/Button/Button';
+import Modal from '../components/Modal/Modal';
 
 class App extends Component {
   state = {
-    contacts: [
-  { id: 'id-1', name: 'Cristiano Ronaldo', number: '459-12-56' },
-  { id: 'id-2', name: 'Harry Kane', number: '443-89-12' },
-  { id: 'id-3', name: 'Erling Haaland', number: '645-17-79' },
-  { id: 'id-4', name: 'Raheem Sterling', number: '227-91-26' },
-    ],
-    filter: '' 
-  }
-
-  componentDidMount() {
-    
-      const json = localStorage.getItem('contacts');
-      const contacts = JSON.parse(json);
-
-      if (contacts) {
-        this.setState(() => ({ contacts: contacts }));
-      }
-    } 
-
-  componentDidUpdate(prevState) {
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
-
-  onSubmit = (submitName, submitNumber) => {
-    if (this.state.contacts.find(contact => contact.name === submitName)) {
-      return alert(`${submitName} is already in contacts.`);
-    }
-    this.setState(PreviousState => {
-      return {
-        contacts: [
-          ...PreviousState.contacts,
-          {
-            id: nanoid(),
-            name: submitName,
-            number: submitNumber,
-          },
-        ],
-      };
-    });
+    photos: [],
+    searchQuery: '',
+    status: 'idle',
+    showModal: false,
+    clickedImg: {},
   };
 
-handleRemoveContact = id => 
-this.setState(({contacts}) => ({
-  contacts: contacts.filter(contact => contact.id !== id),
-}))
+  onSubmit = searchValue => {
+    resetPage();
+    this.setState({ status: 'pending', searchQuery: searchValue });
+    pixFetch(searchValue)
+      .then(data => this.onHandleData(data.hits))
+      .catch(error => console.log(error));
+  };
 
-handleFilterChange = filter => this.setState({filter});
+  onLoadMore = () => {
+    this.setState({ status: 'pending' });
+    pixFetch(this.state.searchQuery)
+      .then(data => this.onHandleData(data.hits))
+      .catch(error => console.log(error));
+  };
 
-getVisibleContacts = () => {
-  const {contacts, filter} = this.state;
-  return contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase()))
-}
+  onHandleData = data => {
+    this.setState(prevState =>
+      prevState.searchQuery !== this.state.searchQuery
+        ? { photos: data, status: 'loaded' }
+        : { photos: [...this.state.photos, ...data], status: 'loaded' }
+    );
+  };
+
+  onHandleClick = click => {
+    const foundImage = this.state.photos.find(photo => photo.tags === click);
+    this.setState({ clickedImg: foundImage, showModal: true });
+  };
+
+  onCloseModal = () => {
+    this.setState({ showModal: false });
+  };
 
   render() {
-    
-const {filter} = this.state;
-const visibleContacts = this.getVisibleContacts();
+    const spinnerStyle = { justifyContent: 'center' };
 
-      return(
-        <>
-        
-        <ContactForm 
-        onSubmit={this.onSubmit}
-        />
-        <div className={s.container}>
-       
-        <h2 className={s.header_contact}>Contacts</h2>
-        <Filter filter={filter} onChange={this.handleFilterChange}/>
-        <ContactList onRemove={this.handleRemoveContact}  contacts={visibleContacts}/>
-        </div>          
-        </>
-      )
+    return (
+      <>
+        <Searchbar onSubmit={this.onSubmit} />
+        <ImageGallery>
+          <ImageGalleryItem
+            photos={this.state.photos}
+            onHandleClick={this.onHandleClick}
+          />
+        </ImageGallery>
+
+        {this.state.status === 'pending' && (
+          <BallTriangle
+            height={100}
+            width={100}
+            radius={5}
+            color="#4fa94d"
+            ariaLabel="ball-triangle-loading"
+            wrapperClass={{}}
+            wrapperStyle={spinnerStyle}
+            visible={true}
+          />
+        )}
+
+        {this.state.status === 'loaded' && (
+          <Button onLoadMore={this.onLoadMore} />
+        )}
+
+        {this.state.showModal && (
+          <Modal
+            photo={this.state.clickedImg}
+            onCloseModal={this.onCloseModal}
+          ></Modal>
+        )}
+      </>
+    );
   }
 }
 
 export default App;
-
-
-
-

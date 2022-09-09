@@ -1,0 +1,27 @@
+.form{
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(to right, rgb(84, 86, 75), rgb(165, 165, 164));
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+.input{
+    width: 200px;
+    height: 25px;
+    margin-left: 20px;
+    border-radius: 5px;
+    border:none;
+    box-shadow: 9px 7px 7px black
+}
+.button:hover {
+    box-shadow: 10px 10px 10px black
+}
+.button_search{
+    text-shadow: 5px 5px 5px rgb(87, 83, 83);
+}
+.button{
+    height: 25px;
+    border-radius: 10px;
+    border: none;
+}
