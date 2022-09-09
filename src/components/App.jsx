@@ -34,7 +34,7 @@ class App extends Component {
 
 
   onLoadMore = () => {
-    this.setState({ status: 'pending', page: this.state.page +=1 });
+    this.setState(prevState =>({ status: 'pending', page: prevState.page +=1 }));
     pixFetch(this.state.searchQuery, this.state.page)
       .then(data => this.onHandleData(data.hits))
       .catch(error => console.log(error));
