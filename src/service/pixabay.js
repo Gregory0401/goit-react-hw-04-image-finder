@@ -1,20 +1,21 @@
-function pixFetch(searchValue, PAGE = 1) {
+function pixFetch(searchValue, page =1) {
   const BASIC_URL = `https://pixabay.com/api/`;
   const searchParam = new URLSearchParams({
     key: '28712886-1cb23b606877bc8498f4e16b7',
     q: `${searchValue}`,
     image_type: 'photo',
     orientation: 'horizontal',
-    page: `${PAGE}`,
-    per_page: 9,
+    page: `${page}`,
+    per_page: 12,
   });
 
-  return fetch(`${BASIC_URL}?${searchParam}`)
-  .then(response => response.json());
+  return fetch(`${BASIC_URL}?${searchParam}`).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('ERROR');
+  });
 }
 
 export default pixFetch;
 
-
-
- 

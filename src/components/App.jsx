@@ -1,76 +1,70 @@
-import React, { Component } from 'react';
-import pixFetch  from '../components/Image/pixabay';
+import pixFetch from 'service/pixabay';
 import { BallTriangle } from 'react-loader-spinner';
 import ImageGallery from '../components/ImageGallery/ImageGallery';
 import ImageGalleryItem from '../components/ImageGalleryItem/ImageGalleryItem';
 import Searchbar from '../components/Searchbar/Searchbar';
 import Button from '../components/Button/Button';
 import Modal from '../components/Modal/Modal';
+import { useState, useEffect } from 'react';
 
-class App extends Component {
-  state = {
-    photos: [],
-    searchQuery: '',
-    status: 'idle',
-    showModal: false,
-    clickedImg: {},
-    page: 1
-  };
+function App() {
+  const [photos, setPhotos] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [status, setStatus] = useState('idle');
+  const [showModal, setShowModal] = useState(false);
+  const [clickedImg, setClickedImg] = useState({});
+  const [page, setPage] = useState(1);
 
-  resetPage = ()=> {
-    this.setState({
-    photos: [],
-    page: 1
-    })
-  }
+  const onSubmit = searchValue => {
   
-  getValue = searchValue => {
-    this.resetPage();
-    this.setState({ searchQuery: searchValue });
-    pixFetch(searchValue)
-      .then(data => this.onHandleData(data.hits))
-      .catch(error => console.log(error));
+    setSearchQuery(searchValue);
+setPage(1)
   };
 
-
-  onLoadMore = () => {
-    this.setState(prevState =>({ status: 'pending', page: prevState.page +=1 }));
-    pixFetch(this.state.searchQuery, this.state.page)
-      .then(data => this.onHandleData(data.hits))
-      .catch(error => console.log(error));
+  useEffect(() => {
+    if(searchQuery.trim()) {
+      setStatus("pending");
+      pixFetch(searchQuery, page)
+      .then(data => onHandleData(data.hits))
+      .catch(error => console.log(error))
+      .finally(() => setStatus(''))
+    } 
+    
+  }, [searchQuery, page])
+  const onLoadMore = () => {
+    
+    setPage(prevState => prevState += 1)
   };
 
-  onHandleData = data => {
-    this.setState(prevState =>
-      prevState.searchQuery !== this.state.searchQuery
-        ? { photos: data, status: 'loaded' }
-        : { photos: [...this.state.photos, ...data], status: 'loaded'}
-    );
+  function onHandleData(data) {
+    
+    setPhotos(data);
+  }
+
+  const onHandleClick = click => {
+    const foundImage = photos.find(photo => photo.tags === click);
+    setClickedImg(foundImage);
+    setShowModal(true);
   };
 
-  onHandleClick = click => {
-    const foundImage = this.state.photos.find(photo => photo.tags === click);
-    this.setState({ clickedImg: foundImage, showModal: true });
+  const onCloseModal = () => {
+    setShowModal(false);
   };
 
-  onCloseModal = () => {
-    this.setState({ showModal: false });
-  };
-
-  render() {
+  
     const spinnerStyle = { justifyContent: 'center' };
 
     return (
       <>
-        <Searchbar onSubmit={this.getValue} />
+        <Searchbar onSubmit={onSubmit} />
         <ImageGallery>
           <ImageGalleryItem
-            photos={this.state.photos}
-            onHandleClick={this.onHandleClick}
+            photos={photos}
+            onHandleClick={onHandleClick}
           />
         </ImageGallery>
 
-        {this.state.status === 'pending' && (
+        {status === 'pending' && (
           <BallTriangle
             height={100}
             width={100}
@@ -83,20 +77,20 @@ class App extends Component {
           />
         )}
 
-        {this.state.status === 'loaded' && (
-          <Button onLoadMore={this.onLoadMore} />
-        )}
+        {photos.length ? (
+          <Button onLoadMore={onLoadMore} />
+        ) : ''}
 
-        {this.state.showModal && (
+        {showModal && (
           <Modal
-            photo={this.state.clickedImg}
-            onCloseModal={this.onCloseModal}
+            photo={clickedImg}
+            onCloseModal={onCloseModal}
           ></Modal>
         )}
       </>
     );
   }
-}
+
 
 export default App;
 

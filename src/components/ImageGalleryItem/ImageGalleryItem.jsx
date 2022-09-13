@@ -1,22 +1,18 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
 import s from '../ImageGalleryItem/ImageGalleryItem.module.css';
 
-class ImageGalleryItem extends Component {
+function ImageGalleryItem({ photos, onHandleClick }) {
 
-  handleClick = e => {
-    const { onHandleClick } = this.props;
+  const handleClick = e => {
     onHandleClick(e.target.alt);
   };
 
-  render() {
-    const { photos } = this.props;
     return photos.map(photo => {
       return (
         <li
           key={photo.id}
           className={s.item}
-          onClick={this.handleClick}
+          onClick={handleClick}
         >
           <img
             src={photo.webformatURL}
@@ -27,7 +23,6 @@ class ImageGalleryItem extends Component {
       );
     });
   }
-}
 
 ImageGalleryItem.propTypes = {
   photos: PropTypes.array.isRequired,

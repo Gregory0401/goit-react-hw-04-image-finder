@@ -1,36 +1,26 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import s from '../Modal/Modal.module.css';
 
-class Modal extends Component {
-  
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleClose);
-  }
-  
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleClose);
-  }
+function Modal({ photo, onCloseModal }) {
 
-  
-  handleClose = e => {
-    const { onCloseModal } = this.props;
-    if (e.currentTarget === e.target || e.code === 'Escape') {
+  const handleClose = e => {
+    e.currentTarget === e.target &&
       onCloseModal();
-    }
   };
 
-  render() {
-    const { photo } = this.props;
+    window.addEventListener('keydown', e => {
+      e.code === 'Escape' && onCloseModal()
+    })
+  
     return (
-      <div className={s.backdrop} onClick={this.handleClose}>
+      <div className={s.backdrop} onClick={handleClose}>
         <div className={s.modal}>
           <img src={photo.largeImageURL} alt={photo.tags} />
         </div>
       </div>
     );
   }
-}
+
 
 Modal.propTypes = {
   photo: PropTypes.object.isRequired,
