@@ -28,17 +28,17 @@ setPage(1)
       .then(data => onHandleData(data.hits))
       .catch(error => console.log(error))
       .finally(() => setStatus(''))
-    } 
-    
+    }  
+    // eslint-disable-next-line
   }, [searchQuery, page])
-  const onLoadMore = () => {
-    
+
+  const onLoadMore = () => { 
     setPage(prevState => prevState += 1)
   };
 
+
   function onHandleData(data) {
-    
-    setPhotos(data);
+    setPhotos([...photos, ...data]);
   }
 
   const onHandleClick = click => {
